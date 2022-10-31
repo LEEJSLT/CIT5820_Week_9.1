@@ -28,17 +28,22 @@ def get_ape_info(apeID):
 	data = {'owner': "", 'image': "", 'eyes': "" }
 	
 	# YOUR CODE HERE
-	contract = web3.eth.contract(address=contract_address, abi=abi)
-	owner = contract.functions.ownerOf(apeID).call()
+	contract = web3.eth.contract(address=contract_address, abi=abi) #Get the ethereum contract
+	owner = contract.functions.ownerOf(apeID).call() #Get the owner of the apeID
 
-	targetApeID = 'QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/' + str(apeID)
-	response = requests.get(f"https://gateway.pinata.cloud/ipfs/{targetApeID}")
+	targetApeID = 'QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/' + str(apeID) #Create the target ape ID string
+	response = requests.get(f"https://gateway.pinata.cloud/ipfs/{targetApeID}") # Get the response from the IPFS
 	response_data = response.json()
+
+	# Owner Value
 	data["owner"] = owner
+
+	# Image Data
 	for index, (key, value) in enumerate(response_data.items()):
 		if key == 'image':
 			data[key] = str(value)
-			
+
+	# Eyes Data	
 	for item in response_data['attributes']:
 		if item['trait_type'] == 'Eyes':
 			data['eyes'] = str(item['value'])
